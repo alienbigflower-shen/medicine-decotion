@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+full_html_updated = """<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
@@ -247,10 +247,11 @@
       </h2>
       <ul class="steps">
         <li>每帖中藥先把藥材拆開，挑出明顯雜質，勿水洗以免藥粉流失。</li>
-        <li>放入陶鍋或不鏽鋼鍋，加入冷水約 <strong>600–700 c.c.</strong>（約 3 小碗水），浸泡 10–15 分鐘。</li>
-        <li>先用中火煮滾後轉小火，加蓋微留縫，煎約 30–40 分鐘，煎成約 <strong>200–250 c.c.</strong>（約 1 小碗藥汁）。</li>
-        <li>若醫師有交代二煎：再加水約 <strong>500–600 c.c.</strong>，同樣方式再煎一次，最後將兩次藥汁混合。</li>
-        <li>藥汁稍放涼，依醫囑分成早／中／晚服用，或依病情調整。</li>
+        <li>先想好這帖要喝幾天／幾碗：例如想一帖喝 3 天就煮成 3 碗，想喝 6 天就煮成 6 碗（一天喝 1 碗）。</li>
+        <li>加水量試算：一開始加水約為「預計要喝的碗數 + 3 碗」的水量，例如想煮成 6 碗就先加約 9 碗水（約 9 × 200–250 c.c.）。</li>
+        <li>確認水量至少要完全淹過藥材，若未淹過請再酌量加水。</li>
+        <li>用中火煮滾後轉小火，加蓋微留縫，煎約 30–40 分鐘，最後調整到預計的碗數藥汁，依醫囑分次溫服。</li>
+        <li>若藥材量太大、家中鍋子無法容納，可考慮購買較大的湯鍋，或洽詢醫院是否提供代煎服務。</li>
       </ul>
       <p class="subnote">
         ✅ 若門診有特別指示「幾碗水煎成幾碗」、「一天喝幾次」，請以
@@ -328,7 +329,7 @@
 
   <script>
     function formatNumber(value, digits) {
-      return Number(value).toFixed(digits).replace(/\.0+$/, "");
+      return Number(value).toFixed(digits).replace(/\\.0+$/, "");
     }
 
     function buildSuggestion(packs, days) {
@@ -341,7 +342,7 @@
       html += '・距離下次回診還有 <strong>' + days + ' 天</strong>。<br/>';
       html += '・平均起來，大約是 <strong>每帖吃 ' + daysPerPackText + ' 天</strong>。<br/><br/>';
 
-      // 情況一：天數 >= 帖數（常見）→ 以「一天一碗」為前提討論
+      // 常見情況：天數 >= 帖數 → 一天 1 碗，算「每帖煎幾碗」
       if (daysPerPack >= 1) {
         const baseDays = Math.floor(daysPerPack);   // 一帖至少吃幾天（向下取整）
         const coveredDays = baseDays * packs;       // 這樣分配可以吃幾天
@@ -363,7 +364,7 @@
 
         html += '<br/><br/><small>小提醒：若醫師有特別交代「一天要喝幾次」或「症狀減輕可以減量」，請以醫師說明為主。</small>';
       } else {
-        // 情況二：天數比帖數少（例如 14 帖只吃 7 天）→ 變成一天超過一帖
+        // 少見情況：天數比帖數少 → 一天超過一帖
         const packsPerDay = packs / days;
         const packsPerDayText = formatNumber(packsPerDay, 2);
 
@@ -402,3 +403,10 @@
   </script>
 </body>
 </html>
+"""
+
+path = "/mnt/data/tcm-herb-calc-updated.html"
+with open(path, "w", encoding="utf-8") as f:
+    f.write(full_html_updated)
+
+path
