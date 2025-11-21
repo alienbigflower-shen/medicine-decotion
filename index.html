@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>中藥煎煮與服用計算小工具</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #f7f5f2;
+      --card-bg: #ffffff;
+      --primary: #3c7a6b;
+      --primary-soft: #e2f0ec;
+      --text-main: #333333;
+      --text-sub: #666666;
+      --border: #e0e0e0;
+      --radius-lg: 18px;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang TC",
+        "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+    }
+
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    header {
+      text-align: center;
+      padding: 16px 8px 8px;
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 1.5rem;
+      letter-spacing: 0.12em;
+      color: var(--primary);
+    }
+
+    header p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text-sub);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 16px 18px 18px;
+      margin-top: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+      border: 1px solid rgba(0, 0, 0, 0.03);
+    }
+
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--primary);
+    }
+
+    .badge {
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+
+    .steps {
+      list-style: none;
+      padding-left: 0;
+      margin: 6px 0 0;
+      font-size: 0.9rem;
+      color: var(--text-sub);
+    }
+
+    .steps li {
+      margin: 4px 0;
+      line-height: 1.5;
+      position: relative;
+      padding-left: 1.4em;
+    }
+
+    .steps li::before {
+      content: "•";
+      position: absolute;
+      left: 0.2em;
+      top: 0;
+      color: var(--primary);
+    }
+
+    .subnote {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .pill {
+      font-size: 0.75rem;
+      padding: 2px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--text-sub);
+      background: #fafafa;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    label {
+      font-size: 0.85rem;
+      color: var(--text-main);
+    }
+
+    input[type="number"] {
+      padding: 7px 9px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 0.95rem;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    input[type="number"]:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(60, 122, 107, 0.12);
+    }
+
+    .unit-hint {
+      font-size: 0.75rem;
+      color: var(--text-sub);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    button {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-sub);
+      border: 1px solid var(--border);
+    }
+
+    .result {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: var(--primary-soft);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #18463a;
+    }
+
+    .result-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .result small {
+      display: block;
+      font-size: 0.78rem;
+      margin-top: 4px;
+      opacity: 0.9;
+    }
+
+    .disclaimer {
+      margin-top: 10px;
+      font-size: 0.75rem;
+      color: var(--text-sub);
+      line-height: 1.4;
+    }
+
+    footer {
+      text-align: center;
+      margin: 16px 0 10px;
+      font-size: 0.7rem;
+      color: var(--text-sub);
+    }
+
+    @media (max-width: 640px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      header h1 {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>中藥煎煮與服用計算小工具</h1>
+      <p>請依照門診醫師指示使用，本頁面只是一個小幫手 💊</p>
+    </header>
+
+    <!-- 煎藥方法說明 -->
+    <section class="card">
+      <h2>
+        🫖 煎藥方法
+        <span class="badge">一般建議</span>
+      </h2>
+      <ul class="steps">
+        <li>每帖中藥先把藥材拆開，挑出明顯雜質，勿水洗以免藥粉流失。</li>
+        <li>放入陶鍋或不鏽鋼鍋，加入冷水約 <strong>600–700 c.c.</strong>（約 3 小碗水），浸泡 10–15 分鐘。</li>
+        <li>先用中火煮滾後轉小火，加蓋微留縫，煎約 30–40 分鐘，煎成約 <strong>200–250 c.c.</strong>（約 1 小碗藥汁）。</li>
+        <li>若醫師有交代二煎：再加水約 <strong>500–600 c.c.</strong>，同樣方式再煎一次，最後將兩次藥汁混合。</li>
+        <li>藥汁稍放涼，依醫囑分成早／中／晚服用，或依病情調整。</li>
+      </ul>
+      <p class="subnote">
+        ✅ 若門診有特別指示「幾碗水煎成幾碗」、「一天喝幾次」，請以
+        <span style="font-weight:600">醫師說明</span>為準；此處為一般成人參考。
+      </p>
+
+      <p class="subnote" style="margin-top:12px;">
+        🧊 若煎好的藥暫時喝不完，請放入<strong>冰箱冷藏保存</strong>，避免變質。<br/>
+        🔥 要喝的時候再取出<strong>加熱至微溫或溫熱</strong>飲用，吸收效果會比較好。
+      </p>
+
+      <div class="pill-row">
+        <div class="pill">避免用鋁鍋、鐵鍋煎藥</div>
+        <div class="pill">服藥前請先稍微攪拌均勻</div>
+        <div class="pill">腸胃敏感者可飯後服用</div>
+      </div>
+    </section>
+
+    <!-- 服藥計算工具 -->
+    <section class="card">
+      <h2>📅 幾帖藥要吃幾天？自動幫你估算「一帖吃幾天」</h2>
+
+      <form id="calcForm">
+        <div class="form-grid">
+          <div class="field">
+            <label for="packs">這次一共拿到幾帖？</label>
+            <input
+              type="number"
+              id="packs"
+              min="1"
+              step="1"
+              inputmode="numeric"
+              required
+              placeholder="例如：6"
+            />
+            <span class="unit-hint">▶️ 「1 帖」通常代表煎一次的量</span>
+          </div>
+          <div class="field">
+            <label for="days">距離下次回診還有幾天？</label>
+            <input
+              type="number"
+              id="days"
+              min="1"
+              step="1"
+              inputmode="numeric"
+              required
+              placeholder="例如：28"
+            />
+            <span class="unit-hint">
+              ▶️ 請從「今天開始喝」到「回診前一天」的總天數
+            </span>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="submit" class="btn-primary">🧮 幫我算算看</button>
+          <button type="button" class="btn-ghost" id="resetBtn">
+            ↺ 清除重填
+          </button>
+        </div>
+      </form>
+
+      <div id="result" class="result" style="display:none;"></div>
+
+      <div class="disclaimer">
+        📌 本工具主要是幫您估算：<strong>一帖大約要吃幾天、每帖可以煎成幾碗</strong>，方便平均分配到回診日附近。<br/>
+        📌 實際用量、是否需要增減或調整，<strong>仍以您的主治醫師說明為主</strong>。若有懷孕、兒童、慢性病或同時服用西藥，請務必再與醫師確認。
+      </div>
+    </section>
+
+    <footer>
+      本頁面僅供衛教輔助使用，非醫療診斷或處方調整依據。
+    </footer>
+  </div>
+
+  <script>
+    function formatNumber(value, digits) {
+      return Number(value).toFixed(digits).replace(/\.0+$/, "");
+    }
+
+    function buildSuggestion(packs, days) {
+      const daysPerPack = days / packs; // 每帖大約要吃幾天
+      const daysPerPackText = formatNumber(daysPerPack, 2);
+      let html = '';
+
+      html += '<div class="result-title">🔢 平均分配結果</div>';
+      html += '・這次一共拿到 <strong>' + packs + ' 帖</strong> 中藥。<br/>';
+      html += '・距離下次回診還有 <strong>' + days + ' 天</strong>。<br/>';
+      html += '・平均起來，大約是 <strong>每帖吃 ' + daysPerPackText + ' 天</strong>。<br/><br/>';
+
+      // 情況一：天數 >= 帖數（常見）→ 以「一天一碗」為前提討論
+      if (daysPerPack >= 1) {
+        const baseDays = Math.floor(daysPerPack);   // 一帖至少吃幾天（向下取整）
+        const coveredDays = baseDays * packs;       // 這樣分配可以吃幾天
+        const leftoverDays = days - coveredDays;    // 剩下幾天沒有藥
+
+        html += '✅ 建議煎煮與分配方式：<br/>';
+        html += '・可以考慮：<strong>每帖先煎成約 ' + baseDays +
+                ' 碗</strong>，一天喝 1 碗。<br/>';
+        html += '　這樣 ' + packs + ' 帖一共大約可喝 <strong>' + coveredDays +
+                ' 天</strong>。<br/>';
+
+        if (leftoverDays > 0) {
+          html += '・之後會有大約 <strong>' + leftoverDays +
+                  ' 天沒有藥</strong>，這是正常的，不一定每天都要有藥。<br/>';
+          html += '・若您希望天數更平均，可以回診時請醫師評估是否要多開幾帖，<br/>　或討論部分日子改為「兩餐喝」而不是「三餐都喝」。';
+        } else {
+          html += '・照這樣分配，剛好可以喝到回診前一天左右。';
+        }
+
+        html += '<br/><br/><small>小提醒：若醫師有特別交代「一天要喝幾次」或「症狀減輕可以減量」，請以醫師說明為主。</small>';
+      } else {
+        // 情況二：天數比帖數少（例如 14 帖只吃 7 天）→ 變成一天超過一帖
+        const packsPerDay = packs / days;
+        const packsPerDayText = formatNumber(packsPerDay, 2);
+
+        html += '✅ 本次天數比帖數少，代表平均起來：<br/>';
+        html += '・大約是 <strong>一天要喝 ' + packsPerDayText + ' 帖</strong> 的量。<br/>';
+        html += '・請依醫師交代的「一天幾帖」為主，這個工具只做大致估算。';
+        html += '<br/><br/><small>若您擔心藥量太大或太多天喝不完，建議回診時與醫師討論是否調整帖數或用藥天數。</small>';
+      }
+
+      return html;
+    }
+
+    document.getElementById("calcForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const packs = parseInt(document.getElementById("packs").value, 10);
+      const days = parseInt(document.getElementById("days").value, 10);
+      const resultEl = document.getElementById("result");
+
+      if (!packs || !days || packs <= 0 || days <= 0) {
+        resultEl.style.display = "block";
+        resultEl.innerHTML =
+          "請先輸入「拿到幾帖」以及「距離下次回診幾天」，都要是大於 0 的整數喔。";
+        return;
+      }
+
+      resultEl.style.display = "block";
+      resultEl.innerHTML = buildSuggestion(packs, days);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      document.getElementById("packs").value = "";
+      document.getElementById("days").value = "";
+      document.getElementById("result").style.display = "none";
+      document.getElementById("result").innerHTML = "";
+    });
+  </script>
+</body>
+</html>
